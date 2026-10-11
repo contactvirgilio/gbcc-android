@@ -4,7 +4,7 @@ cross-platform Game Boy and Game Boy Color emulator written in C with a focus
 on accuracy. See the [main repository](https://github.com/philj56/gbcc) for
 details.
 
-## Install
+## Install Please
 You can get gbcc on [Google Play](https://play.google.com/store/apps/details?id=com.philj56.gbcc).
 
 ### Prebuilt packages ![](https://github.com/philj56/gbcc-android/workflows/Build%20APK/badge.svg)
