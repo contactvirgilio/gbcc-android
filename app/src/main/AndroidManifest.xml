@@ -37,14 +37,18 @@
 		android:fullBackupOnly="true"
 		android:icon="@mipmap/ic_launcher"
 		android:isGame="true"
+		android:appCategory="game"
 		android:label="@string/app_name"
 		android:roundIcon="@mipmap/ic_launcher_round"
 		android:supportsRtl="true"
 		android:theme="@style/Theme.GBCC.Teal"
-		android:gwpAsanMode="always" tools:targetApi="32">
+		android:gwpAsanMode="always" tools:targetApi="36">
 
+		<!-- Gamepads can send KEYCODE_BACK, which users may map to an emulator button.
+		     Opt out of predictive back so key events keep reaching the activity. -->
 		<activity android:name=".GLActivity"
 			android:parentActivityName="MainActivity"
+			android:enableOnBackInvokedCallback="false"
 			android:immersive="true"
 			android:exported="true">
 			<intent-filter>
@@ -91,10 +95,12 @@
 
 		<activity android:name=".RemapActivity"
 			android:parentActivityName=".SettingsActivity"
+			android:enableOnBackInvokedCallback="false"
 			android:screenOrientation="userLandscape"/>
 
 		<activity android:name=".AdditionalMappingsActivity"
 			android:parentActivityName=".SettingsActivity"
+			android:enableOnBackInvokedCallback="false"
 			android:label="@string/additional_mappings_title"/>
 
 		<activity android:name=".LicenseListActivity"

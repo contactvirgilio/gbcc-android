@@ -32,6 +32,8 @@ import kotlin.math.min
 import kotlin.math.pow
 
 class ArrangeActivity : BaseActivity() {
+    override val handlesWindowInsets = true
+
     private val scaleFactorRange : Float = 2f
 
     private lateinit var prefs : SharedPreferences

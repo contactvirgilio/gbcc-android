@@ -1,9 +1,9 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
-    id("com.android.application") version "8.0.1" apply false
-    kotlin("android") version "1.8.21" apply false
+    // AGP 9 compiles Kotlin itself (built-in Kotlin), so the kotlin-android plugin is no longer applied.
+    id("com.android.application") version "9.4.0" apply false
 }
 
 tasks.register<Delete>("clean") {
-    delete(rootProject.buildDir)
+    delete(rootProject.layout.buildDirectory)
 }

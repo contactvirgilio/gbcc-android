@@ -125,6 +125,8 @@ private val ACTION_TO_KEY_MAP = mapOf(
 )
 
 class GLActivity : BaseActivity(), SensorEventListener {
+    override val handlesWindowInsets = true
+
 
     private data class ButtonInfo(val view: View, val id: Int) {
         var isNormalPressed: Boolean = false

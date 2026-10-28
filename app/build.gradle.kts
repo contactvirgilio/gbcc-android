@@ -2,7 +2,6 @@
 
 plugins {
 	id("com.android.application") apply true
-	kotlin("android") apply true
 }
 
 base {
@@ -10,12 +9,12 @@ base {
 }
 
 android {
-	compileSdk = 33
-	buildToolsVersion = "33.0.0"
+	compileSdk = 37
 	defaultConfig {
 		applicationId = "com.philj56.gbcc"
-		minSdk = 21
-		targetSdk = 33
+		// AndroidX and Material Components now require API 23 or higher
+		minSdk = 23
+		targetSdk = 36
 		versionCode = 41
 		versionName = "beta41"
 		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -27,11 +26,11 @@ android {
 		ndk {
 			debugSymbolLevel = "FULL"
 		}
-		splits {
-			abi {
-				isEnable = true
-				isUniversalApk = true
-			}
+	}
+	splits {
+		abi {
+			isEnable = true
+			isUniversalApk = true
 		}
 	}
 	buildTypes {
@@ -63,38 +62,29 @@ android {
 		targetCompatibility = JavaVersion.VERSION_17
 	}
 
-	kotlinOptions {
-		jvmTarget = JavaVersion.VERSION_17.toString()
-	}
-
-	ndkVersion = "25.2.9519653"
+	// NDK r28+ builds 16 KB page-aligned libraries, required on Android 15+ devices
+	ndkVersion = "28.2.13676358"
 	namespace = "com.philj56.gbcc"
 }
 
 dependencies {
 	implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-	implementation("androidx.camera:camera-core:1.2.2")
-	implementation("androidx.camera:camera-camera2:1.2.2")
-	implementation("androidx.camera:camera-lifecycle:1.2.2")
-	implementation("androidx.core:core-ktx:1.10.0")
-	implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-	implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
-	implementation("androidx.preference:preference-ktx:1.2.0")
-	implementation("androidx.recyclerview:recyclerview:1.3.0")
-	implementation("com.google.android.material:material:1.8.0")
+	implementation("androidx.camera:camera-core:1.6.2")
+	implementation("androidx.camera:camera-camera2:1.6.2")
+	implementation("androidx.camera:camera-lifecycle:1.6.2")
+	implementation("androidx.core:core-ktx:1.19.1")
+	implementation("androidx.activity:activity-ktx:1.13.0")
+	implementation("androidx.appcompat:appcompat:1.8.0")
+	implementation("androidx.constraintlayout:constraintlayout:2.2.2")
+	implementation("androidx.coordinatorlayout:coordinatorlayout:1.3.0")
+	implementation("androidx.fragment:fragment-ktx:1.9.1")
+	implementation("androidx.preference:preference-ktx:1.2.1")
+	implementation("androidx.recyclerview:recyclerview:1.4.0")
+	implementation("com.google.android.material:material:1.14.0")
 
-	// Needed temporarily to work around dependency issues
-	constraints {
-		implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1") {
-			because("Two dependencies have conflicting versions of this.")
-		}
-		implementation("androidx.lifecycle:lifecycle-viewmodel:2.6.1") {
-			because("Get your shit together Google.")
-		}
-	}
 	testImplementation("junit:junit:4.13.2")
-	androidTestImplementation("androidx.test:runner:1.5.2")
-	androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+	androidTestImplementation("androidx.test:runner:1.7.0")
+	androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
 }
 
 tasks.register<Copy>("copyAssets") {

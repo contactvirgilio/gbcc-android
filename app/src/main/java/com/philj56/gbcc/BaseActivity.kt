@@ -3,7 +3,12 @@ package com.philj56.gbcc
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Bundle
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.Insets
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.preference.PreferenceManager
 
 abstract class BaseActivity : AppCompatActivity() {
@@ -14,6 +19,12 @@ abstract class BaseActivity : AppCompatActivity() {
     private var oledNightMode: Boolean = false
     private lateinit var prefs: SharedPreferences
 
+    /**
+     * Activities that draw full screen and manage the system bars themselves
+     * (e.g. the emulator screen) override this to skip the default inset handling.
+     */
+    protected open val handlesWindowInsets: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
@@ -23,6 +34,41 @@ abstract class BaseActivity : AppCompatActivity() {
         if (inNightMode && oledNightMode) {
             theme.applyStyle(R.style.OledDark, true)
         }
+    }
+
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        if (!handlesWindowInsets) {
+            applySystemBarInsets()
+        }
+    }
+
+    /**
+     * From Android 15 (targetSdk 35+) every activity is drawn edge-to-edge, behind the
+     * status and navigation bars. Layouts whose root has fitsSystemWindows already handle
+     * the top inset through their AppBarLayout, so only the bottom and side insets
+     * (navigation bar, display cutout) are padded here. Other layouts are padded on all sides.
+     * On older versions the window already excludes the system bars, so the insets are zero.
+     */
+    private fun applySystemBarInsets() {
+        val content = findViewById<ViewGroup>(android.R.id.content) ?: return
+        val root: View = content.getChildAt(0) ?: return
+        val handlesTop = root.fitsSystemWindows
+        ViewCompat.setOnApplyWindowInsetsListener(content) { view, insets ->
+            val bars = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
+            )
+            val top = if (handlesTop) 0 else bars.top
+            view.setPadding(bars.left, top, bars.right, bars.bottom)
+            WindowInsetsCompat.Builder(insets)
+                .setInsets(
+                    WindowInsetsCompat.Type.systemBars(),
+                    Insets.of(0, if (handlesTop) bars.top else 0, 0, 0)
+                )
+                .setInsets(WindowInsetsCompat.Type.displayCutout(), Insets.NONE)
+                .build()
+        }
+        ViewCompat.requestApplyInsets(content)
     }
 
     override fun onStart() {
