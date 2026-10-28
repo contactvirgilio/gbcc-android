@@ -30,6 +30,9 @@ android {
 	splits {
 		abi {
 			isEnable = true
+			// Only ABIs supported by current NDKs (armeabi and mips were removed)
+			reset()
+			include("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
 			isUniversalApk = true
 		}
 	}
