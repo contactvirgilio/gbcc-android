@@ -107,6 +107,9 @@ class MainActivity : BaseActivity() {
         currentDir = baseDir
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        if (savedInstanceState == null) {
+            AnrDiagnostics.showPendingReports(this)
+        }
 
         // Set up the toolbars
         binding.mainToolbar.setOnMenuItemClickListener { item -> onMenuItemClick(item) }

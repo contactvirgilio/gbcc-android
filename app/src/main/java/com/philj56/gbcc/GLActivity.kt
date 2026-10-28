@@ -127,6 +127,12 @@ private val ACTION_TO_KEY_MAP = mapOf(
 class GLActivity : BaseActivity(), SensorEventListener {
     override val handlesWindowInsets = true
 
+    private val anrWatchdog by lazy {
+        AnrDiagnostics.AnrWatchdog(applicationContext) {
+            AnrDiagnostics.showPendingReports(this)
+        }
+    }
+
 
     private data class ButtonInfo(val view: View, val id: Int) {
         var isNormalPressed: Boolean = false
@@ -705,6 +711,7 @@ class GLActivity : BaseActivity(), SensorEventListener {
     }
 
     override fun onResume() {
+        anrWatchdog.start()
         super.onResume()
         binding.screen.onResume()
         startGBCC()
@@ -830,6 +837,7 @@ class GLActivity : BaseActivity(), SensorEventListener {
         stopGBCC()
         binding.screen.onPause()
         super.onPause()
+        anrWatchdog.stop()
     }
 
     override fun onDestroy() {
