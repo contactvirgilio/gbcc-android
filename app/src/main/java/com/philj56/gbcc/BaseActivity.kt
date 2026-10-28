@@ -1,6 +1,7 @@
 package com.philj56.gbcc
 
 import android.content.SharedPreferences
+import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
@@ -69,6 +70,17 @@ abstract class BaseActivity : AppCompatActivity() {
                 .build()
         }
         ViewCompat.requestApplyInsets(content)
+    }
+
+    /** Maps the stored "orientation" preference (see orientation_values_array) to a screen orientation. */
+    protected fun orientationFromPreference(value: String?): Int {
+        return when (value?.toIntOrNull()) {
+            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT -> ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE -> ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE -> ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+            ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE -> ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE
+            else -> ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
     }
 
     override fun onStart() {

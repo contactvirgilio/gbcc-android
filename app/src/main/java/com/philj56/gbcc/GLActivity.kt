@@ -509,7 +509,7 @@ class GLActivity : BaseActivity(), SensorEventListener {
         chdir(filesDir.absolutePath)
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        requestedOrientation = prefs.getString("orientation", "-1")?.toInt() ?: -1
+        requestedOrientation = orientationFromPreference(prefs.getString("orientation", null))
         binding = ActivityGlBinding.inflate(layoutInflater)
         setContentView(binding.root)
         hideNavigation()

@@ -153,7 +153,7 @@ class ArrangeActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        requestedOrientation = prefs.getString("orientation", "-1")?.toInt() ?: -1
+        requestedOrientation = orientationFromPreference(prefs.getString("orientation", null))
 
         binding = ActivityArrangeBinding.inflate(layoutInflater)
         setContentView(binding.root)
