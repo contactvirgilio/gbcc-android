@@ -1304,7 +1304,7 @@ class GLActivity : BaseActivity(), SensorEventListener {
                             bitmap.setPixel(x, y, Color.argb(255, px, px, px))
                         }
                     }
-                    contentResolver.openOutputStream(uri).use { stream ->
+                    contentResolver.openOutputStream(uri)?.use { stream ->
                         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
                     }
                 }
