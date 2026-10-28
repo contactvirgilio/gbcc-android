@@ -12,12 +12,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         submodules: recursive
 
     - name: Set up JDK 21
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v5
       with:
         java-version: '21'
         distribution: 'temurin'
@@ -27,18 +27,40 @@ jobs:
       run: chmod +x gradlew
 
     - name: Build with Gradle
-      run: ./gradlew build --stacktrace
+      run: |
+        set -o pipefail
+        ./gradlew build --stacktrace 2>&1 | tee build.log
+
+    - name: Report build errors
+      if: failure()
+      run: |
+        # Surface the relevant part of the Gradle output as an annotation,
+        # so failures are readable without downloading the full log.
+        {
+          sed -n '/What went wrong/,/^\* Try:/p' build.log
+          grep -E -A2 "^e: |error:|warning: \[|^ERROR" build.log
+        } | head -c 30000 > errors.txt || true
+        msg=$(sed -e 's/%/%25/g' -e 's/\r/%0D/g' errors.txt | sed -e ':a;N;$!ba;s/\n/%0A/g')
+        echo "::error title=Gradle build failed::${msg}"
 
     - name: Upload debug APK
       if: success()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: gbcc-debug
         path: app/build/outputs/apk/debug/gbcc-universal-debug.apk
 
+    - name: Upload build log
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: build-log
+        path: build.log
+        if-no-files-found: ignore
+
     - name: Upload lint report
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: lint-report
         path: app/build/reports/lint-results-*.html
